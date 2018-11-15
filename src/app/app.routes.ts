@@ -1,21 +1,20 @@
 import { RouterModule, Routes } from '@angular/router'
 import { LoginComponent } from './login/login.component'
-import { TodoComponent } from './todo/todo.component'
 import { ModuleWithProviders } from '@angular/core'
 
 export const routers: Routes = [
   {
     path: '',
-    redirectTo: 'todo',
+    redirectTo: 'todo/ALL',
     pathMatch: 'full'
-  },
-  {
-    path: 'todo',
-    component: TodoComponent
   },
   {
     path: 'login',
     component: LoginComponent
+  },
+  {
+    path: 'todo',
+    redirectTo: 'todo'
   }
 ]
 

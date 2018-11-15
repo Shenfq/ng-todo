@@ -7,7 +7,8 @@ import { Todo } from './todo.model'
   providedIn: 'root'
 })
 export class TodoService {
-  private api_url = 'api/todos'
+  // private api_url = 'api/todos'
+  private api_url = 'http://localhost:3000/todos'
   private headers = new Headers({
     'Content-Type': 'application/json'
   })
@@ -30,14 +31,13 @@ export class TodoService {
     console.log(url)
     let updatedTodo = Object.assign({}, todo, {completed: !todo.completed})
     return this.http
-      .put(url, JSON.stringify(updatedTodo), { headers: this.headers })
+      .patch(url, JSON.stringify({ completed: !todo.completed }), { headers: this.headers })
       .toPromise()
       .then(() => updatedTodo)
       .catch(this.handleError)
   }
   deletedTodoById(id: string): Promise<void> {
     const url = `${this.api_url}/${id}`
-    console.log(url)
     return this.http
       .delete(url, { headers: this.headers })
       .toPromise()
@@ -50,6 +50,28 @@ export class TodoService {
       .toPromise()
       .then(res => res.json() as Todo[])
       .catch(this.handleError)
+  }
+  filterTodos(filter: string): Promise<Todo[]> {
+    switch(filter) {
+      case 'ACTIVE':
+        return this.http
+          .get(this.api_url + '?completed=false', { headers: this.headers })
+          .toPromise()
+          .then(res => res.json() as Todo[])
+          .catch(this.handleError)
+      case 'COMPLETED':
+        return this.http
+          .get(this.api_url + '?completed=true', { headers: this.headers })
+          .toPromise()
+          .then(res => res.json() as Todo[])
+          .catch(this.handleError)
+      default:
+        return this.http
+          .get(this.api_url, { headers: this.headers })
+          .toPromise()
+          .then(res => res.json() as Todo[])
+          .catch(this.handleError)
+    }
   }
   private handleError(error: any): Promise<any> {
     console.log(error)

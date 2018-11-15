@@ -1,27 +1,25 @@
 # NgDemo
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 7.0.3.
+项目基于 [Angular CLI](https://github.com/angular/angular-cli) version 7.0.3。
 
-## Development server
+## 开发模式
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+运行 `ng serve` 启动本地服务，启动后打开 `http://localhost:4200/` 查看页面。
 
-## Code scaffolding
+## 代码生成
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+使用 `ng generate component component-name` 生成一个新的组件。
 
-## Build
+其他命令： `ng generate directive|pipe|service|class|guard|interface|enum|module`
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+## 打包发布
 
-## Running unit tests
+运行 `ng build` 进行打包。 打包后的代码在 `dist/` 目录下. 正式环境使用 `--prod` 参数。
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+## mock接口
 
-## Running end-to-end tests
+使用`json-server`，需要先全局安装：`npm i -g json-server`
 
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+```bash
+json-server ./src/app/todo/todo.data.json
+```

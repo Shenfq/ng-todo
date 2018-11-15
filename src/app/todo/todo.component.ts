@@ -1,37 +1,70 @@
-import { Component, OnInit } from '@angular/core'
-import { TodoService } from './todo.service'
+import { Component, OnInit, Inject } from '@angular/core'
+import { Router, ActivatedRoute, Params } from '@angular/router'
 import { Todo } from './todo.model'
 
 @Component({
-  selector: 'app-todo',
   templateUrl: './todo.component.html',
-  styleUrls: ['./todo.component.css'],
-  providers: [TodoService]
+  styleUrls: ['./todo.component.css']
 })
 export class TodoComponent implements OnInit {
   todos: Todo[] = []
   desc: string = ''
 
-  constructor(private service: TodoService) { }
+  constructor(
+    @Inject('todoService') private service,
+    private route: ActivatedRoute,
+    private router: Router
+  ) { }
 
   ngOnInit() {
-    this.getTodos()
+    // this.getTodos()
+    this.route.params.forEach((params: Params) => {
+      let filter = params.filter
+      this.filterTodos(filter || 'ALL')
+    })
   }
-
+  toggleAll() {
+    Promise.all(
+      this.todos.map(
+        todo => this.toggleTodo(todo)
+      )
+    )
+  }
+  clearCompleted() {
+    const completed_todos = this.todos.filter(todo => todo.completed)
+    const active_todos = this.todos.filter(todo => !todo.completed)
+    Promise.all(
+      completed_todos.map(todo =>
+        this.service.deletedTodoById(todo.id)
+      )
+    ).then(() => {
+      this.todos = [...active_todos]
+    })
+  }
+  filterTodos(filter: string) {
+    this.service.filterTodos(filter).then(todos => {
+      this.todos = [...todos]
+    })
+  }
+  onTextChanges(value) {
+    this.desc = value
+  }
   getTodos(): void {
     this.service
       .getTodos()
       .then(todos => {
-        console.log(todos)
         this.todos = [ ...todos ]
       })
   }
 
   addTodo() {
+    if (this.desc.trim() === '') {
+      alert('todo 描述不能为空')
+      return
+    }
     this.service
       .addTodo(this.desc)
       .then(todo => {
-        console.log(todo)
         this.todos = [ ...this.todos, todo ]
         this.desc = ''
       })
